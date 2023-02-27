@@ -1,4 +1,3 @@
-const boidRadius = 0.1;
 const boidHeadAngle = 0.5;
 
 function drawBoids(gBoids, boids) {
@@ -35,12 +34,12 @@ function drawBoids(gBoids, boids) {
 
   function attrPointsBoid(b) {
     return `\
-      ${b.x + Angle.toVec2(b.yaw).x * boidRadius} \
-      ${b.y + Angle.toVec2(b.yaw).y * boidRadius} \
-      ${b.x + Angle.toVec2(b.yaw + Math.PI - boidHeadAngle).x * boidRadius} \
-      ${b.y + Angle.toVec2(b.yaw + Math.PI - boidHeadAngle).y * boidRadius} \
-      ${b.x + Angle.toVec2(b.yaw + Math.PI + boidHeadAngle).x * boidRadius} \
-      ${b.y + Angle.toVec2(b.yaw + Math.PI + boidHeadAngle).y * boidRadius}`;
+      ${b.x + Angle.toVec2(b.yaw).x * option.boid.radius} \
+      ${b.y + Angle.toVec2(b.yaw).y * option.boid.radius} \
+      ${b.x + Angle.toVec2(b.yaw + Math.PI - boidHeadAngle).x * option.boid.radius} \
+      ${b.y + Angle.toVec2(b.yaw + Math.PI - boidHeadAngle).y * option.boid.radius} \
+      ${b.x + Angle.toVec2(b.yaw + Math.PI + boidHeadAngle).x * option.boid.radius} \
+      ${b.y + Angle.toVec2(b.yaw + Math.PI + boidHeadAngle).y * option.boid.radius}`;
   }
 
   // Boid body
@@ -65,7 +64,44 @@ function drawObstacles(gObstacles, obstacles) {
     .attr('r', obstacleRadius);
 }
 
+function drawObstacleLines(gObstacles, obstacleLines) {
+  const indicatorLength = 1;
+  function getEnd(ol) {
+    return Vec2.mul(Vec2.add(ol.origin, Angle.toVec2(ol.direction)), indicatorLength);
+  }
+
+  function attrPointsLineHead(ol) {
+    const end = getEnd(ol);
+    const arrowHeadAngle = 0.3 * Math.PI;
+    const arrowHeadRadius = 0.05;
+    return `\
+      ${end.x + Angle.toVec2(ol.direction).x * arrowHeadRadius} \
+      ${end.y + Angle.toVec2(ol.direction).y * arrowHeadRadius} \
+      ${end.x + Angle.toVec2(ol.direction + Math.PI - arrowHeadAngle).x * arrowHeadRadius} \
+      ${end.y + Angle.toVec2(ol.direction + Math.PI - arrowHeadAngle).y * arrowHeadRadius} \
+      ${end.x + Angle.toVec2(ol.direction + Math.PI + arrowHeadAngle).x * arrowHeadRadius} \
+      ${end.y + Angle.toVec2(ol.direction + Math.PI + arrowHeadAngle).y * arrowHeadRadius}`;
+  }
+
+  gObstacles
+    .selectAll('.obstacleLine')
+    .data(obstacleLines.filter((ol) => ol.show))
+    .join('line')
+    .classed('obstacleLine', true)
+    .attr('x1', (ol) => ol.origin.x)
+    .attr('y1', (ol) => ol.origin.y)
+    .attr('x2', (ol) => getEnd(ol).x)
+    .attr('y2', (ol) => getEnd(ol).y);
+  gObstacles
+    .selectAll('.obstacleLine__head')
+    .data(obstacleLines.filter((ol) => ol.show))
+    .join('polygon')
+    .classed('obstacleLine__head', true)
+    .attr('points', attrPointsLineHead);
+}
+
 function drawWorld(svgWorld, world) {
   drawBoids(svgWorld.select('#gBoids'), world.boids);
   drawObstacles(svgWorld.select('#gObstacles'), world.obstacles);
+  drawObstacleLines(svgWorld.select('#gObstacles'), world.obstacleLines);
 }

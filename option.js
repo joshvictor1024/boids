@@ -15,6 +15,7 @@ const option = {
     }
   },
   boid: {
+    radius: 0.1, // In meters.
     speed: 2, // In meters per second.
     maxAcceleration: 1.5, // In meters per second squared.
     rotationSpeed: 3, // In radians per second.

@@ -41,3 +41,36 @@ function newObstacle(x, y, show) {
     show: show
   };
 }
+
+const ObstacleLine = {
+  /**
+   * ObstacleLine is an directioned infinite line in the direction of (dx, dy) = (x2-x1, y2-y1).
+   * Boids attempt to stay on the (-dy, dx) side,
+   * i.e. toward the counter-clockwise (negative angle) of the line.
+   * */
+  isDirectionAllowed: function (a, ol) {
+    return Angle.clampPi(a - ol.direction) < 0;
+  },
+  hasCollisionCircle(cx, cy, r, ol) {
+    const {PC} = circleLineRelation(cx, cy, ol);
+    return Vec2.len(PC) < r || ObstacleLine.isDirectionAllowed(Vec2.angle(PC), ol) === false;
+  }
+};
+
+/**
+ * An directioned infinite line in the direction of (dx, dy) = (x2-x1, y2-y1).
+ * Boids attempt to stay on the (-dy, dx) side,
+ * i.e. toward the counter-clockwise (negative angle) of the line.
+ * @typedef {Object} ObstacleLine
+ * @property {Line} origin In meters.
+ * @property {number} direction In radians.
+ * @property {boolean} show
+ */
+
+function newObstacleLine(origin, direction, show) {
+  return {
+    origin: origin,
+    direction: direction,
+    show: show
+  };
+}

@@ -108,3 +108,12 @@ h3 {
     /* stroke: darkblue;
     stroke-width: 0.02; */
 }
+.obstacleLine {
+    stroke: darkred;
+    stroke-width: 0.02;
+}
+.obstacleLine__head {
+    fill: darkred;
+    stroke: darkred;
+    stroke-width: 0.01;
+}

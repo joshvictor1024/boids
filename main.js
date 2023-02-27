@@ -62,7 +62,8 @@ const world = {
   width: 0,
   height: 0,
   boids: [],
-  obstacles: []
+  obstacles: [],
+  obstacleLines: []
 };
 
 function setupSvgWorld(svgWorld) {
@@ -110,15 +111,16 @@ window.addEventListener('load', async () => {
   // world.boids[0].showVision = true;
 
   // Setup obstacles
-  const obstacleMargin = 0.2;
-  for (let i = 0; (i - 1) * obstacleMargin <= world.width; i++) {
-    world.obstacles.push(newObstacle(i * obstacleMargin, 0, false));
-    world.obstacles.push(newObstacle(i * obstacleMargin, world.height, false));
-  }
-  for (let i = 1; (i - 1) * obstacleMargin <= world.height; i++) {
-    world.obstacles.push(newObstacle(0, i * 0.25, false));
-    world.obstacles.push(newObstacle(world.width, i * 0.25, false));
-  }
+  world.obstacleLines.push(newObstacleLine(newVec2(world.x, world.y), Math.PI, false));
+  world.obstacleLines.push(
+    newObstacleLine(newVec2(world.x, world.y + world.height), 0.5 * Math.PI, false)
+  );
+  world.obstacleLines.push(
+    newObstacleLine(newVec2(world.x + world.width, world.y + world.height), 0, false)
+  );
+  world.obstacleLines.push(
+    newObstacleLine(newVec2(world.x + world.width, world.y), 1.5 * Math.PI, false)
+  );
 
   // Main function
   let lastRAFTimestamp = null;

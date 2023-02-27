@@ -1,6 +1,4 @@
 const Vec2 = {
-  x: 0,
-  y: 0,
   add: function (v1, v2) {
     return newVec2(v1.x + v2.x, v1.y + v2.y);
   },
@@ -69,3 +67,28 @@ const Angle = {
     return newVec2(Math.sin(a), -Math.cos(a));
   }
 };
+
+/**
+ * An directioned infinite line in the direction of (dx, dy) = (x2-x1, y2-y1).
+ * @typedef {Object} Line
+ * @property {Vec2} origin In meters.
+ * @property {number} direction In radians.
+ */
+function newLine(origin, direction) {
+  return {
+    origin: origin,
+    direction: direction
+  };
+}
+
+/**
+ * @returns {{P: Vec2, PC: Vec2}} `P` is the nearest point on `ol` to `b`; `PC` is the vector from `P` to `b`.
+ */
+function circleLineRelation(cx, cy, l) {
+  const C = newVec2(cx, cy);
+  const AC = Vec2.sub(C, l.origin);
+  const AB = Angle.toVec2(l.direction);
+  const P = Vec2.add(Vec2.proj(AC, AB), l.origin);
+  const PC = Vec2.sub(C, P);
+  return {P: P, PC: PC};
+}

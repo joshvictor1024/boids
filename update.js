@@ -6,13 +6,22 @@ function inVision(x, y, b) {
   );
 }
 
+function inVisionObstacleLine(b, ol) {
+  const {PC} = circleLineRelation(b.x, b.y, ol);
+  const d = Vec2.mul(PC, -1);
+  return (
+    ObstacleLine.hasCollisionCircle(b.x, b.y, option.boid.visionRadius, ol) &&
+    Math.abs(Angle.clampPi(Vec2.angle(d) - b.yaw)) < option.boid.visionAngle / 2
+  );
+}
+
 /**
  * For more on boids and their rules, see:
  * https://en.wikipedia.org/wiki/Boids
  * @returns {Vec2|null}
  */
-function findTarget(b, otherBoids, obstacles) {
-  if (otherBoids.length === 0 && obstacles.length === 0) {
+function findTarget(b, otherBoids, obstacles, obstacleLines) {
+  if (otherBoids.length === 0 && obstacles.length === 0 && obstacleLines.length == 0) {
     return null;
   }
 
@@ -36,6 +45,19 @@ function findTarget(b, otherBoids, obstacles) {
       Vec2.mul(Vec2.unit(d), option.findTarget.separation.weightObstacle / Vec2.len(d))
     );
   });
+  obstacleLines.forEach((ol) => {
+    const {PC} = circleLineRelation(b.x, b.y, ol);
+    const d = Vec2.mul(PC, -1);
+    vSep = Vec2.add(
+      vSep,
+      Vec2.mul(Vec2.unit(d), option.findTarget.separation.weightObstacle / Vec2.len(d))
+    );
+  });
+  // When entities have illegal positions, `NaN` may occur.
+  if (Number.isNaN(vSep.x) || Number.isNaN(vSep.y)) {
+    console.error('vSep has NaN');
+    vSep.x = vSep.y = 0;
+  }
 
   // Alignment
   let vAli = newVec2(0, 0);
@@ -113,6 +135,20 @@ function move(b, dt) {
   b.y += d.y;
 }
 
+function collision(b, obstacleLines) {
+  obstacleLines.forEach((ol) => {
+    const {PC} = circleLineRelation(b.x, b.y, ol);
+    if (ObstacleLine.hasCollisionCircle(b.x, b.y, option.boid.radius, ol)) {
+      const r = option.boid.radius;
+      const l = Vec2.len(PC);
+      const m = ObstacleLine.isDirectionAllowed(Vec2.angle(PC), ol) ? (r - l) / l : -((r + l) / l);
+      const d = Vec2.mul(Vec2.unit(PC), option.boid.radius * m);
+      b.x += d.x;
+      b.y += d.y;
+    }
+  });
+}
+
 function respawn(b, world) {
   if (b.x < world.x) {
     b.x = world.x + world.width;
@@ -137,10 +173,12 @@ function update(dt, world) {
   world.boids.forEach((b) => {
     const otherBoidsVisible = world.boids.filter((c) => c !== b && inVision(c.x, c.y, b));
     const obstaclesVisible = world.obstacles.filter((ob) => inVision(ob.x, ob.y, b));
-    const t = findTarget(b, otherBoidsVisible, obstaclesVisible);
+    const obstacleLinesVisible = world.obstacleLines.filter((ol) => inVisionObstacleLine(b, ol));
+    const t = findTarget(b, otherBoidsVisible, obstaclesVisible, obstacleLinesVisible);
     b.target = t;
     resolve(b, t, dt);
     move(b, dt);
+    collision(b, world.obstacleLines);
     respawn(b, world);
     velSum = Vec2.add(velSum, Vec2.mul(Angle.toVec2(b.yaw), b.speed));
     if (b.target !== null) {
