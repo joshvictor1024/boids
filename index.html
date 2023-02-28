@@ -20,7 +20,51 @@
           <h1>Boids Simulation</h1>
           <address id="author">Josh Chuang</address>
         </header>
-        <div id="option"></div>
+        <div id="tabs">
+          <h2 class="tab" id="tabIntroduction">I. Introduction</h2>
+          <h2 class="tab tab--inactive" id="tabOption">II. Option</h2>
+        </div>
+        <div id="panels">
+          <div class="panel" id="panelIntroduction">
+            <br />
+            <p>
+              Boids is a flocking model by Craig Reynolds. Each agent, called "boid", follows three
+              rules:
+            </p>
+            <ul>
+              <li><i>separation</i>: avoid crowding nearby boids</li>
+              <li><i>alignment</i>: match the velocities of other boids</li>
+              <li><i>cohesion</i>: match the average position of other boids</li>
+            </ul>
+            <p>The boids as a whole exhibits a flocking behavior.</p>
+            <p>
+              For further information, see
+              <a
+                href="https://www.red3d.com/cwr/boids/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                >Craig Reynolds' page</a
+              >
+              or the
+              <a
+                href="https://en.wikipedia.org/wiki/Boids"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                >Wikipedia page</a
+              >.
+            </p>
+            <p>
+              The source code is available on
+              <a
+                href="https://github.com/joshvictor1024/boids"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                >Github</a
+              >.
+            </p>
+          </div>
+          <div class="panel" id="panelOption" style="display: none"></div>
+        </div>
       </div>
       <svg id="world"></svg>
     </div>

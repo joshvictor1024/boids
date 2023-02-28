@@ -37,10 +37,18 @@ h1 {
     font-size: 16pt;
     font-style: normal;
 }
-#option {
-    flex: 1 0 0;
-    overflow-y: scroll;
-    padding: 0 0 20px 10px;
+#tabs {
+    flex: 0 0 35px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    /* padding: 0 0 20px 10px; */
+    /* background: red; */
+}
+.tab--inactive {
+    color: lightgray;
+    cursor: pointer;
+    /* padding: 0 0 20px 10px; */
     /* background: red; */
 }
 h2 {
@@ -48,6 +56,27 @@ h2 {
     font-size: 15pt;
     font-weight: normal;
     font-variant: small-caps;
+}
+#panels {
+    flex: 1 0 0;
+    display: flex;
+    flex-direction: column;
+    padding: 0 0 20px 10px;
+}
+.panel {
+    flex: 1 0 0;
+    padding: 0 0 20px 10px;
+    /* background: red; */
+}
+#panelIntroduction p {
+    margin: 10px 10px 10px 0px;
+}
+#panelIntroduction ul {
+    margin: 10px 10px 10px 20px;
+}
+#panelOption {
+    margin: 10px 0px 10px 0px;
+    overflow-y: scroll;
 }
 .option__section {
     padding: 0 0 0 5px;

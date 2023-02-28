@@ -1,11 +1,30 @@
-function setupDivOption(divOption) {
+const defaultActiveTab = 'tabIntroduction'; // 'tabIntroduction', 'tabOption'
+let activeTab = defaultActiveTab;
+const panels = {
+  tabIntroduction: 'panelIntroduction',
+  tabOption: 'panelOption'
+};
+
+function setupDivTabs() {
+  function setTabActive(id) {
+    activeTab = id;
+    d3.selectAll('.tab').classed('tab--inactive', true);
+    d3.select(`#${activeTab}`).classed('tab--inactive', false);
+    d3.selectAll('.panel').style('display', 'none');
+    d3.select(`#${panels[activeTab]}`).style('display', '');
+  }
+  d3.selectAll('.tab').on('click', function () {
+    setTabActive(this.id);
+  });
+}
+
+function setupDivOption() {
+  const divOption = d3.select('#panelOption');
   // For `h3` ordering.
   function getAlphabet(i) {
     return 'ABCDEFG'[i];
   }
-
   // Option
-  divOption.append('h2').text('Options');
   Object.keys(optionUI).forEach((s, index) => {
     // Option section
     const section = divOption.append('section').attr('id', s).classed('option__section', true);
@@ -23,7 +42,6 @@ function setupDivOption(divOption) {
             .property('checked', optionUI[s].items[i].get())
             .on('change', function () {
               optionUI[s].items[i].set(d3.select(this).property('checked'));
-              console.log(option);
             });
           break;
         case 'slider':
@@ -93,9 +111,9 @@ function setupSvgWorld(svgWorld) {
 
 window.addEventListener('load', async () => {
   // Setup DOM
-  const divOption = d3.select('#option');
   const svgWorld = d3.select('#world');
-  setupDivOption(divOption);
+  setupDivTabs();
+  setupDivOption();
   setupSvgWorld(svgWorld);
 
   // Setup boids

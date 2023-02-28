@@ -8,9 +8,9 @@ An interactive Boids simulator.
 
 Boids is a flocking model by Craig Reynolds. Each agent, called "boid", follows three rules:
 
-- separation: avoid crowding nearby boids
-- alignment: match the velocities of other boids
-- cohesion: match the average position of other boids
+- *separation*: avoid crowding nearby boids
+- *alignment*: match the velocities of other boids
+- *cohesion*: match the average position of other boids
 
 The boids as a whole exhibits a flocking behavior.
 
